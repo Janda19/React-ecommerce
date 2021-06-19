@@ -6,7 +6,7 @@ import {HomePage} from './pages/homepage/homepage.component'
 import Shop from "./pages/shop/shop.component";
 import {Header} from "./components/header/header.component";
 import SignInSignUp from "./pages/signin-signup/signin-signup.component";
-import {auth} from "./firebase/firebase.utils";
+import {auth, createUserProfileDoc} from "./firebase/firebase.utils";
 
 class App extends React.Component {
 
@@ -18,13 +18,24 @@ class App extends React.Component {
     }
 
     unsubscribeUser = null
-
     componentDidMount() {
-        this.unsubscribeUser = auth.onAuthStateChanged(user => {
-            this.setState({currentUser: user})
+        this.unsubscribeUser = auth.onAuthStateChanged(async userAuth => {
+            if (userAuth) {
+                const userRef = await createUserProfileDoc(userAuth)
+
+                userRef.onSnapshot(snapshot => {
+                    this.setState({
+                        currentUser: {
+                            id: snapshot.id,
+                            ...snapshot.data()
+                        }
+                    })
+                })
+            } else {
+                this.setState({currentUser: userAuth})
+            }
         })
     }
-
     componentWillUnmount() {
         this.unsubscribeUser() // to unsubscribe the user
     }
@@ -35,7 +46,9 @@ class App extends React.Component {
             <div>
                 <Header user={this.state.currentUser}/>
                 <Switch>
-                    <Route exact path="/" component={HomePage} />
+                    <Route exact path="/" component={HomePage}/>
+                    {/*passing props in a route : */}
+                    {/*<Route exact path="/" render={(props) => <HomePage name="janda"/>} />*/}
                     <Route exact path="/shop" component={Shop}/>
                     <Route exact path="/signin" component={SignInSignUp}/>
                 </Switch>
