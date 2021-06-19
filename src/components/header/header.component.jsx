@@ -23,7 +23,7 @@ export const Header = ({user}) => (
                         SIGNIN
                     </Link>) :
                     (
-                        <Link to="" onClick={()=>auth.signOut()} className="option">
+                        <Link to="/" onClick={()=>auth.signOut()} className="option">
                             SIGNOUT
                         </Link>
                     )

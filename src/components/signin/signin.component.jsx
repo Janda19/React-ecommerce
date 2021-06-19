@@ -3,6 +3,7 @@ import "./signin.style.scss"
 import FormInput from "../form-input/form-input.component";
 import CustomButton from "../custom-button/custom-button.component";
 import {signInWithGoogle} from "../../firebase/firebase.utils";
+import {auth} from "../../firebase/firebase.utils";
 
 class SignIn extends React.Component {
     constructor(props) {
@@ -13,9 +14,14 @@ class SignIn extends React.Component {
         }
     }
 
-    submitHandler = e => {
+    submitHandler = async e => {
         e.preventDefault();
-        this.setState({email: '', password: ''})
+        try {
+            await auth.signInWithEmailAndPassword(this.state.email, this.state.password)
+            this.setState({email: '', password: ''})
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     changeHandler = (e) => {
@@ -30,14 +36,15 @@ class SignIn extends React.Component {
                 <h2>I already have an account</h2>
                 <span>Sign In with email and password </span>
                 <form onSubmit={this.submitHandler}>
-                    <FormInput handleChange={this.changeHandler} label="Email" name="password"
-                               value={this.state.password} required/>
-                    <FormInput handleChange={this.changeHandler} label="Password" name="password"
+                    <FormInput handleChange={this.changeHandler} type="email" label="Email" name="email"
+                               value={this.state.email} required/>
+                    <FormInput handleChange={this.changeHandler} type="password" label="Password" name="password"
                                value={this.state.password} required/>
                     <div className="buttons-container">
                         <CustomButton type="submit">Sign In</CustomButton>
 
-                        <CustomButton onClick={signInWithGoogle} isGoogleSignIn={true}>Sign In with google</CustomButton>
+                        <CustomButton onClick={signInWithGoogle} isGoogleSignIn={true}>Sign In with
+                            google</CustomButton>
                     </div>
                 </form>
 
