@@ -1,30 +1,29 @@
 import React from 'react';
 import './App.css';
-
 import {Route, Switch} from "react-router-dom";
+import {connect} from "react-redux";
+import {auth, createUserProfileDoc} from "./firebase/firebase.utils";
+import {setCurrentUser} from "./redux/user/user.action"
+
 import {HomePage} from './pages/homepage/homepage.component'
 import Shop from "./pages/shop/shop.component";
-import {Header} from "./components/header/header.component";
+import Header from "./components/header/header.component";
 import SignInSignUp from "./pages/signin-signup/signin-signup.component";
-import {auth, createUserProfileDoc} from "./firebase/firebase.utils";
 
 class App extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentUser: null
-        }
-    }
+
 
     unsubscribeUser = null
+
     componentDidMount() {
+        const {setCurrentUser} = this.props
         this.unsubscribeUser = auth.onAuthStateChanged(async userAuth => {
             if (userAuth) {
                 const userRef = await createUserProfileDoc(userAuth)
 
                 userRef.onSnapshot(snapshot => {
-                    this.setState({
+                    setCurrentUser({
                         currentUser: {
                             id: snapshot.id,
                             ...snapshot.data()
@@ -32,10 +31,11 @@ class App extends React.Component {
                     })
                 })
             } else {
-                this.setState({currentUser: userAuth})
+                setCurrentUser({currentUser: userAuth})
             }
         })
     }
+
     componentWillUnmount() {
         this.unsubscribeUser() // to unsubscribe the user
     }
@@ -44,7 +44,7 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <Header user={this.state.currentUser}/>
+                <Header/>
                 <Switch>
                     <Route exact path="/" component={HomePage}/>
                     {/*passing props in a route : */}
@@ -57,4 +57,8 @@ class App extends React.Component {
     }
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+    setCurrentUser: user => dispatch(setCurrentUser(user))
+})
+
+export default connect(null, mapDispatchToProps)(App)
