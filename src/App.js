@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import {Route, Switch} from "react-router-dom";
+import {Route, Switch, Redirect} from "react-router-dom";
 import {connect} from "react-redux";
 import {auth, createUserProfileDoc} from "./firebase/firebase.utils";
 import {setCurrentUser} from "./redux/user/user.action"
@@ -11,7 +11,6 @@ import Header from "./components/header/header.component";
 import SignInSignUp from "./pages/signin-signup/signin-signup.component";
 
 class App extends React.Component {
-
 
 
     unsubscribeUser = null
@@ -31,7 +30,7 @@ class App extends React.Component {
                     })
                 })
             } else {
-                setCurrentUser({currentUser: userAuth})
+                setCurrentUser(userAuth)
             }
         })
     }
@@ -50,15 +49,25 @@ class App extends React.Component {
                     {/*passing props in a route : */}
                     {/*<Route exact path="/" render={(props) => <HomePage name="janda"/>} />*/}
                     <Route exact path="/shop" component={Shop}/>
-                    <Route exact path="/signin" component={SignInSignUp}/>
+                    <Route exact path="/signin" render={() =>
+                        this.props.currentUser ? (
+                            <Redirect to='/'/>
+                        ) : (
+                            <SignInSignUp/>
+                        )
+                    }/>
                 </Switch>
             </div>
         );
     }
 }
 
+const mapStateToProps = ({user : {currentUser}}) => ({
+    currentUser
+})
+
 const mapDispatchToProps = dispatch => ({
     setCurrentUser: user => dispatch(setCurrentUser(user))
 })
 
-export default connect(null, mapDispatchToProps)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(App)
