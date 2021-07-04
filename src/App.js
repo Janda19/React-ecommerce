@@ -12,6 +12,7 @@ import SignInSignUp from "./pages/signin-signup/signin-signup.component";
 
 import {createStructuredSelector} from "reselect";
 import {selectCurrentUser} from "./redux/user/user.selectors";
+import Checkout from "./pages/checkout/checkout.component";
 
 class App extends React.Component {
 
@@ -51,7 +52,8 @@ class App extends React.Component {
                     <Route exact path="/" component={HomePage}/>
                     {/*passing props in a route : */}
                     {/*<Route exact path="/" render={(props) => <HomePage name="janda"/>} />*/}
-                    <Route exact path="/shop" component={Shop}/>
+                    <Route  path="/shop" component={Shop}/>
+                    <Route exact path="/checkout" component={Checkout}/>
                     <Route exact path="/signin" render={() =>
                         this.props.currentUser ? (
                             <Redirect to='/'/>

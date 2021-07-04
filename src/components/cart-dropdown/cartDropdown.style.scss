@@ -11,6 +11,7 @@
   right: 40px;
   z-index: 5;
   overflow-y: scroll;
+  align-items: center;
 
   .cart-items {
     height: 240px;
@@ -21,5 +22,8 @@
 
   button {
     margin-top: auto;
+  }
+  .empty-message{
+    font-size: 18px;
   }
 }
