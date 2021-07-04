@@ -10,6 +10,10 @@ import {connect} from "react-redux";
 import {CartReducer} from "../../redux/cart/cart.reducer";
 import {toggleCartHidden} from "../../redux/cart/cart.action";
 
+import {createStructuredSelector} from "reselect";
+import {selectCurrentUser} from "../../redux/user/user.selectors";
+import {selectCartHidden} from "../../redux/cart/cart.selectors";
+
 const Header = ({currentUser, hidden}) => (
     <div className="header">
         <Link to="/" className="logo-container">
@@ -45,10 +49,10 @@ const Header = ({currentUser, hidden}) => (
     </div>
 )
 // state is the rootReducer
-const mapStateToProps = ({user: {currentUser}, cart : {hidden}}) => (
+const mapStateToProps = createStructuredSelector(
     {
-        currentUser,
-        hidden
+        currentUser : selectCurrentUser,
+        hidden : selectCartHidden
     }
 )
 
