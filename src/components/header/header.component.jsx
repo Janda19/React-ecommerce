@@ -13,39 +13,41 @@ import {createStructuredSelector} from "reselect";
 import {selectCurrentUser} from "../../redux/user/user.selectors";
 import {selectCartHidden} from "../../redux/cart/cart.selectors";
 
-const Header = ({currentUser, hidden}) => (
-    <div className="header">
-        <Link to="/" className="logo-container">
-            <Logo className="logo"/>
-        </Link>
+import {HeaderContainer , LogoContainer , OptionLink , OptionsContainer} from "./header.style";
 
-        <div className="options">
-            <Link to="/shop" className="option">
+const Header = ({currentUser, hidden}) => (
+    <HeaderContainer>
+        <LogoContainer to="/" >
+            <Logo className="logo"/>
+        </LogoContainer>
+
+        <OptionsContainer >
+            <OptionLink to="/shop" >
                 SHOP
-            </Link>
-            <Link to="/shop" className="option">
+            </OptionLink>
+            <OptionLink to="/shop">
                 CONTACT
-            </Link>
+            </OptionLink>
             {
                 !currentUser ?
-                    (<Link to="/signin" className="option">
+                    (<OptionLink to="/signin" >
                         SIGNIN
-                    </Link>) :
+                    </OptionLink>) :
                     (
-                        <Link to="/" onClick={() => auth.signOut()} className="option">
+                        <OptionLink as="div" to="/" onClick={() => auth.signOut()}>
                             SIGNOUT
-                        </Link>
+                        </OptionLink>
                     )
             }
             <CartIcon/>
 
-        </div>
+        </OptionsContainer>
         {
             hidden ? null :
                 (  <CartDropdown/>)
 
         }
-    </div>
+    </HeaderContainer>
 )
 // state is the rootReducer
 const mapStateToProps = createStructuredSelector(

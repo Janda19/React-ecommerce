@@ -1,21 +1,22 @@
 import {createSelector} from "reselect";
 import memoize from 'lodash.memoize';
-const shopSelector = state => state.shop
+
+const shopSelector = state => state.shop.collections
 
 export const shopSelectorData = createSelector([shopSelector],
     data => {
         let collections = [];
         collections = data;
-        return collections
+        return collections ? collections: []
     })
 
 
 
 export const selectCollection = memoize( (collectionUrlParam: any) =>
     createSelector(
-        [shopSelectorData],
+        [shopSelector],
         collections=> {
 
-            return collections.find((item) => item.id === collectionUrlParam)
+            return collections ?  collections[collectionUrlParam]: null
         }
     ));

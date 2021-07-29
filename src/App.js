@@ -10,6 +10,7 @@ import Shop from "./pages/shop/shop.component";
 import Header from "./components/header/header.component";
 import SignInSignUp from "./pages/signin-signup/signin-signup.component";
 
+
 import {createStructuredSelector} from "reselect";
 import {selectCurrentUser} from "./redux/user/user.selectors";
 import Checkout from "./pages/checkout/checkout.component";
@@ -17,11 +18,11 @@ import Checkout from "./pages/checkout/checkout.component";
 class App extends React.Component {
 
 
-    unsubscribeUser = null
+    unsubscribeFromAuthListener = null
 
     componentDidMount() {
         const {setCurrentUser} = this.props
-        this.unsubscribeUser = auth.onAuthStateChanged(async userAuth => {
+        this.unsubscribeFromAuthListener = auth.onAuthStateChanged(async userAuth => {
             if (userAuth) {
                 const userRef = await createUserProfileDoc(userAuth)
 
@@ -36,11 +37,12 @@ class App extends React.Component {
             } else {
                 setCurrentUser(userAuth)
             }
+
         })
     }
 
     componentWillUnmount() {
-        this.unsubscribeUser() // to unsubscribe the user
+        this.unsubscribeFromAuthListener() // to unsubscribe from listening to auth change
     }
 
 
@@ -52,7 +54,7 @@ class App extends React.Component {
                     <Route exact path="/" component={HomePage}/>
                     {/*passing props in a route : */}
                     {/*<Route exact path="/" render={(props) => <HomePage name="janda"/>} />*/}
-                    <Route  path="/shop" component={Shop}/>
+                    <Route path="/shop" component={Shop}/>
                     <Route exact path="/checkout" component={Checkout}/>
                     <Route exact path="/signin" render={() =>
                         this.props.currentUser ? (
@@ -67,8 +69,9 @@ class App extends React.Component {
     }
 }
 
-const mapStateToProps =createStructuredSelector({
-    currentUser : selectCurrentUser
+const mapStateToProps = createStructuredSelector({
+    currentUser: selectCurrentUser,
+    // collectionArray: shopSelectorData
 })
 
 const mapDispatchToProps = dispatch => ({

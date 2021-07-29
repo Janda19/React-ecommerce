@@ -1,0 +1,3 @@
+export const shopTypes = {
+    UPDATE_SHOP_COLLECTIONS: "UPDATE_SHOP_COLLECTIONS"
+}
