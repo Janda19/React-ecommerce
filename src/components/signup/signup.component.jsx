@@ -4,6 +4,9 @@ import {auth, createUserProfileDoc} from "../../firebase/firebase.utils";
 import FormInput from "../form-input/form-input.component"
 import CustomButton from "../custom-button/custom-button.component";
 
+import {signUpStart} from "../../redux/user/user.action";
+import {connect} from "react-redux";
+
 class SignUp extends React.Component {
 
     constructor() {
@@ -17,28 +20,32 @@ class SignUp extends React.Component {
     }
 
     submitHandler = async (e) => {
+        const {signUp} = this.props
         e.preventDefault()
         const {displayName, email, password, confirmPassword} = this.state
-        if (password !== confirmPassword) {
-            alert("passwords don't match ! ")
-            return
-        }
-        try {
-            const {user} = await auth.createUserWithEmailAndPassword(email, password)
-            console.log(user)
-            await createUserProfileDoc(user, {displayName})
+        signUp(displayName, email, password, confirmPassword)
 
-            await auth.signInWithEmailAndPassword(email,password)
 
-            this.setState({
-                email: "",
-                displayName: "",
-                password: "",
-                confirmPassword: ''
-            })
-        } catch (e) {
-            console.log(e)
-        }
+        // if (password !== confirmPassword) {
+        //     alert("passwords don't match ! ")
+        //     return
+        // }
+        // try {
+        //     const {user} = await auth.createUserWithEmailAndPassword(email, password)
+        //     console.log(user)
+        //     await createUserProfileDoc(user, {displayName})
+        //
+        //     await auth.signInWithEmailAndPassword(email, password)
+        //
+        //     this.setState({
+        //         email: "",
+        //         displayName: "",
+        //         password: "",
+        //         confirmPassword: ''
+        //     })
+        // } catch (e) {
+        //     console.log(e)
+        // }
 
     }
 
@@ -82,5 +89,13 @@ class SignUp extends React.Component {
 
 }
 
+const mapDispatchToProps = (dispatch) => ({
+    signUp: (displayName, email, password, confirmPassword) => dispatch(signUpStart({
+        displayName,
+        email,
+        password,
+        confirmPassword
+    }))
+})
 
-export default SignUp
+export default connect(null, mapDispatchToProps)(SignUp)

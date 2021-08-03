@@ -1,22 +1,35 @@
-import {createSelector} from "reselect";
-import memoize from 'lodash.memoize';
+import { createSelector } from 'reselect';
 
-const shopSelector = state => state.shop.collections
+const selectShop = state => state.shop;
 
-export const shopSelectorData = createSelector([shopSelector],
-    data => {
-        let collections = [];
-        collections = data;
-        return collections ? collections: []
-    })
+export const selectCollections = createSelector(
+    [selectShop],
+    shop => shop.collections
+);
 
+export const selectCollectionsForPreview = createSelector(
+    [selectCollections],
+    collections =>
+        collections ? Object.keys(collections).map(key => collections[key]) : []
+);
 
-
-export const selectCollection = memoize( (collectionUrlParam: any) =>
+export const selectCollection = collectionUrlParam =>
     createSelector(
-        [shopSelector],
-        collections=> {
+        [selectCollections],
+        collections => (collections ? collections[collectionUrlParam] : null)
+    );
 
-            return collections ?  collections[collectionUrlParam]: null
-        }
-    ));
+export const selectIsCollectionFetching = createSelector(
+    [selectShop],
+    shop => shop.isFetching
+);
+//
+// export const selectIsCollectionsLoaded = createSelector(
+//     [selectShop],
+//     shop => !!shop.collections
+// );
+
+
+export const selectIsCollectionsLoaded = createSelector([selectShop] ,
+    shop => !!shop.collections // returns true if the collections exists
+    )

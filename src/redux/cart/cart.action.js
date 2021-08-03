@@ -5,18 +5,22 @@ export const toggleCartHidden = () => ({
 });
 
 export const addItem = (item) => ({
-    type: cartActionTypes.ADD_ITEM ,
+    type: cartActionTypes.ADD_ITEM,
     payload: item
 });
 
 export const removeItem = (item) => ({
-    type: cartActionTypes.REMOVE_ITEM ,
+    type: cartActionTypes.REMOVE_ITEM,
     payload: item
 });
 
 
 export const decreaseItemCount = (item) => ({
-    type: cartActionTypes.DECREASE_ITEM ,
+    type: cartActionTypes.DECREASE_ITEM,
     payload: item
 });
+
+export const cartClear = () => ({
+    type: cartActionTypes.CLEAR_CART
+})
 

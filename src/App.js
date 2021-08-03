@@ -2,8 +2,6 @@ import React from 'react';
 import './App.css';
 import {Route, Switch, Redirect} from "react-router-dom";
 import {connect} from "react-redux";
-import {auth, createUserProfileDoc} from "./firebase/firebase.utils";
-import {setCurrentUser} from "./redux/user/user.action"
 
 import {HomePage} from './pages/homepage/homepage.component'
 import Shop from "./pages/shop/shop.component";
@@ -14,35 +12,18 @@ import SignInSignUp from "./pages/signin-signup/signin-signup.component";
 import {createStructuredSelector} from "reselect";
 import {selectCurrentUser} from "./redux/user/user.selectors";
 import Checkout from "./pages/checkout/checkout.component";
+import {checkUserSession} from "./redux/user/user.action"
 
 class App extends React.Component {
 
 
-    unsubscribeFromAuthListener = null
-
     componentDidMount() {
-        const {setCurrentUser} = this.props
-        this.unsubscribeFromAuthListener = auth.onAuthStateChanged(async userAuth => {
-            if (userAuth) {
-                const userRef = await createUserProfileDoc(userAuth)
+        const {checkUser} = this.props
+        checkUser()
 
-                userRef.onSnapshot(snapshot => {
-                    setCurrentUser({
-                        currentUser: {
-                            id: snapshot.id,
-                            ...snapshot.data()
-                        }
-                    })
-                })
-            } else {
-                setCurrentUser(userAuth)
-            }
-
-        })
     }
 
     componentWillUnmount() {
-        this.unsubscribeFromAuthListener() // to unsubscribe from listening to auth change
     }
 
 
@@ -71,11 +52,9 @@ class App extends React.Component {
 
 const mapStateToProps = createStructuredSelector({
     currentUser: selectCurrentUser,
-    // collectionArray: shopSelectorData
 })
-
-const mapDispatchToProps = dispatch => ({
-    setCurrentUser: user => dispatch(setCurrentUser(user))
-})
-
+const mapDispatchToProps = (dispatch) => ({
+    checkUser: () => dispatch(checkUserSession())
+}
+)
 export default connect(mapStateToProps, mapDispatchToProps)(App)

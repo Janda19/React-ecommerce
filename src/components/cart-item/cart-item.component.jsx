@@ -1,7 +1,6 @@
 import React from 'react';
 
 import './cart-item.style.scss';
-import styled from "styled-components"
 
 
 const CartItem = ({item: {imageUrl, price, name, quantity}}) => {
